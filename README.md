@@ -32,4 +32,7 @@ Back Services for Financial Investment
 * GoLang
 * GraphQL
 * PostgreSQL
-* AWS Lambda
+* Supabase
+    * Postgres
+    * Functions
+    * Auth
