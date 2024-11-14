@@ -12,7 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func StartCrawler(cfg *config.Config) {
+func StartFinanceYahooCrawler(cfg *config.Config) {
 	log := logging.NewLogger()
 
 	c := colly.NewCollector(

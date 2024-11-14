@@ -7,5 +7,5 @@ import (
 
 func main() {
 	cfg := config.LoadConfig()
-	crawler.StartCrawler(cfg)
+	crawler.StartFinanceYahooCrawler(cfg)
 }
