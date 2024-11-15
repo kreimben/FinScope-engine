@@ -17,7 +17,7 @@ func StartFinanceYahooCrawler(cfg *config.Config) {
 
 	c := colly.NewCollector(
 		colly.AllowedDomains("finance.yahoo.com"),
-		colly.Async(false),
+		colly.Async(true),
 	)
 
 	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
@@ -29,7 +29,6 @@ func StartFinanceYahooCrawler(cfg *config.Config) {
 				return
 			}
 			if !exists {
-				time.Sleep(500 * time.Millisecond)
 				e.Request.Visit(link)
 			} else {
 				log.WithField("link", link).Debug("URL already visited")
@@ -48,7 +47,12 @@ func StartFinanceYahooCrawler(cfg *config.Config) {
 
 		title := e.ChildText("h1.cover-title")
 		content := e.ChildText(".article .body")
-		publishedDate := e.ChildText("time")
+		publishedDateStr := e.ChildAttr("time", "datetime")
+		publishedDate, err := time.Parse(time.RFC3339, publishedDateStr)
+		if err != nil {
+			log.WithError(err).Error("Error parsing published date")
+			return
+		}
 
 		data := models.FinanceNews{
 			Title:         title,
@@ -62,7 +66,7 @@ func StartFinanceYahooCrawler(cfg *config.Config) {
 			"origin_url":     link,
 		}).Debug("Inserting news into database")
 
-		err := database.InsertNews(cfg, data)
+		err = database.InsertNews(cfg, data)
 		if err != nil {
 			log.WithError(err).Error("Error inserting into database")
 		} else {

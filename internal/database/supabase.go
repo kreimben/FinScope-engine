@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/kreimben/FinScope-engine/internal/config"
 	"github.com/kreimben/FinScope-engine/internal/models"
@@ -55,7 +56,12 @@ func InsertNews(cfg *config.Config, data models.FinanceNews) error {
 	// 	return err
 	// }
 
-	jsonData, err := json.Marshal(data)
+	jsonData, err := json.Marshal(map[string]interface{}{
+		"title":          data.Title,
+		"content":        data.Content,
+		"published_date": data.PublishedDate.Format(time.RFC3339),
+		"origin_url":     data.OriginURL,
+	})
 	if err != nil {
 		return err
 	}

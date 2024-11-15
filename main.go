@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"os"
-	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/kreimben/FinScope-engine/internal/config"
@@ -19,17 +18,8 @@ func init() {
 }
 
 func handleRequest(ctx context.Context, event json.RawMessage) error {
-	ticker := time.NewTicker(time.Minute * 1) // 1분마다 크롤링 수행
-	defer ticker.Stop()
-
-	for {
-		select {
-		case <-ticker.C:
-			crawler.StartFinanceYahooCrawler(cfg)
-		case <-ctx.Done():
-			return ctx.Err()
-		}
-	}
+	crawler.StartFinanceYahooCrawler(cfg)
+	return nil
 }
 
 func main() {
