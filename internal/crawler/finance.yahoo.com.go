@@ -73,10 +73,12 @@ func StartFinanceYahooCrawler(cfg *config.Config) {
 	log.Info("Starting collector")
 	err := c.Visit("https://finance.yahoo.com/topic/latest-news/")
 	if err != nil {
-		log.WithError(err).Fatal("Error starting collector")
+		log.WithError(err).Error("Error starting collector")
 	}
 
 	c.Wait()
+
+	log.Info("Crawling finished")
 
 	defer func() {
 		if r := recover(); r != nil {
