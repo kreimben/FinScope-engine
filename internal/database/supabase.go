@@ -4,20 +4,24 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/kreimben/FinScope-engine/internal/config"
 	"github.com/kreimben/FinScope-engine/internal/models"
+	"github.com/kreimben/FinScope-engine/pkg/logging"
 )
 
-func CheckURLExists(cfg *config.Config, url string) (bool, error) {
-	// tokenString, err := auth.GenerateJWT(cfg)
-	// if err != nil {
-	// 	return false, err
-	// }
+func CheckURLExists(cfg *config.Config, urlStr string) (bool, error) {
+	// URL encode the origin_url parameter
+	encodedURL := url.QueryEscape(urlStr)
+	requestURL := fmt.Sprintf("%s/rest/v1/finance_news?origin_url=eq.%s", cfg.SupabaseURL, encodedURL)
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/rest/v1/finance_news?origin_url=eq.%s", cfg.SupabaseURL, url), nil)
+	logging.Logger.WithField("requestURL", requestURL).Debug("Checking URL in database")
+
+	req, err := http.NewRequest("GET", requestURL, nil)
 	if err != nil {
 		return false, err
 	}
@@ -32,18 +36,18 @@ func CheckURLExists(cfg *config.Config, url string) (bool, error) {
 	}
 	defer resp.Body.Close()
 
-	// // Read the response body for logging
-	// bodyBytes, err := io.ReadAll(resp.Body)
-	// if err != nil {
-	// 	return false, fmt.Errorf("failed to read response body: %v", err)
-	// }
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return false, fmt.Errorf("failed to read response body: %v", err)
+	}
 
-	// // Log the response body
-	// logging.Logger.WithField("response", string(bodyBytes)).Info("Response body")
+	if len(body) == 0 {
+		return false, nil // No data found, URL does not exist
+	}
 
-	// Create a new reader with the body bytes for decoding
 	var result []models.FinanceNews
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	if err := json.Unmarshal(body, &result); err != nil {
+		logging.Logger.WithField("body", string(body)).Error("Failed to decode response")
 		return false, fmt.Errorf("failed to decode response: %v", err)
 	}
 
@@ -51,11 +55,6 @@ func CheckURLExists(cfg *config.Config, url string) (bool, error) {
 }
 
 func InsertNews(cfg *config.Config, data models.FinanceNews) error {
-	// tokenString, err := auth.GenerateJWT(cfg)
-	// if err != nil {
-	// 	return err
-	// }
-
 	jsonData, err := json.Marshal(map[string]interface{}{
 		"title":          data.Title,
 		"content":        data.Content,

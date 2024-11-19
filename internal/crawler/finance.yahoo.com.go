@@ -13,7 +13,7 @@ import (
 )
 
 func StartFinanceYahooCrawler(cfg *config.Config) {
-	log := logging.NewLogger()
+	log := logging.Logger
 
 	c := colly.NewCollector(
 		colly.AllowedDomains("finance.yahoo.com"),
@@ -70,11 +70,11 @@ func StartFinanceYahooCrawler(cfg *config.Config) {
 		if err != nil {
 			log.WithError(err).Error("Error inserting into database")
 		} else {
-			log.WithField("title", title).Info("Inserted news into database")
+			log.WithField("title", title).Debug("Inserted news into database")
 		}
 	})
 
-	log.Info("Starting collector")
+	log.Info("[Finance Yahoo] Starting collector")
 	err := c.Visit("https://finance.yahoo.com/topic/latest-news/")
 	if err != nil {
 		log.WithError(err).Error("Error starting collector")
@@ -82,12 +82,5 @@ func StartFinanceYahooCrawler(cfg *config.Config) {
 
 	c.Wait()
 
-	log.Info("Crawling finished")
-
-	defer func() {
-		if r := recover(); r != nil {
-			log.WithField("panic", r).Error("Recovered from panic")
-		}
-		log.Info("Programme ended")
-	}()
+	log.Info("[Finance Yahoo] Crawling finished")
 }
