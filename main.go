@@ -20,9 +20,8 @@ func init() {
 }
 
 func handleRequest(ctx context.Context, event json.RawMessage) error {
-	// crawler.StartFinanceYahooCrawler(cfg)
-	// crawler.StartBenzingaCrawler(cfg)
-	crawler.StartWSJCrawler(cfg)
+	crawler.StartFinanceYahooCrawler(cfg)
+	crawler.StartBenzingaCrawler(cfg)
 	return nil
 }
 
