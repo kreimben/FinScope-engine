@@ -77,21 +77,20 @@ func StartBenzingaCrawler(cfg *config.Config) {
 		if !utils.ContainsURLLink(newsUrlFormat, link) {
 			return
 		}
-		// log.WithField("link", link).Debug("Visited URL")
 
 		title := e.ChildText("h1.layout-title")
 		if title == "" {
-			log.WithField("link", link).Error("No title found")
+			log.WithField("link", link).Debug("No title found")
 			return
 		}
 		content := e.ChildText("div.article-content-body-only")
 		if content == "" {
-			log.WithField("link", link).Error("No content found")
+			log.WithField("link", link).Debug("No content found")
 			return
 		}
 		publishedDateStr := e.ChildText("span.date")
 		if publishedDateStr == "" {
-			log.WithField("link", link).Error("No published date found")
+			log.WithField("link", link).Debug("No published date found")
 			return
 		}
 		publishedDate, err := time.Parse("January 2, 2006 3:04 PM", publishedDateStr)
