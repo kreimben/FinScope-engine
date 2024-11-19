@@ -30,4 +30,4 @@ func NewLogger() *logrus.Logger {
 	return log
 }
 
-var Logger = NewLogger()
+var Logger *logrus.Logger

@@ -25,11 +25,6 @@ func HasPathAfterNews(url string) bool {
 
 // ContainsURLLink checks if a URL matches any of the patterns in the slice.
 // The patterns can contain wildcards (*) and will be converted to regex patterns.
-// For example, patterns like:
-// - "https://www.benzinga.com/trading-ideas/*"
-// - "https://www.benzinga.com/news/*"
-// - "https://www.benzinga.com/[0-9][0-9]/[0-9][0-9]/*"
-// - "https://www.benzinga.com/markets/*"
 func ContainsURLLink(slice []string, item string) bool {
 	for _, s := range slice {
 		// Convert pattern to regex by escaping dots and replacing * with .*
@@ -40,4 +35,10 @@ func ContainsURLLink(slice []string, item string) bool {
 		}
 	}
 	return false
+}
+
+var UaList = []string{
+	"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+	"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+	"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
 }
