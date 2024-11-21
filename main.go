@@ -37,6 +37,10 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 		economic_indicators.GatherGDP(cfg)
 	}
 
+	if slices.Contains(finScopeEngineEvent.Execute, "CPI") {
+		economic_indicators.GatherCPI(cfg)
+	}
+
 	if slices.Contains(finScopeEngineEvent.Execute, "yahoo_finance") {
 		crawler.StartFinanceYahooCrawler(cfg)
 	}
