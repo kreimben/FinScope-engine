@@ -22,21 +22,16 @@ Back Services for Financial Investment
 * 경제 지표
     * 경제 지표는 정해진 날 딱 한번 발표 되며 기존의 데이터들은 절대로 변하지 않음
     * 한달에 몇번만, 하지만 실시간으로 빠르게 (발표 후 1분 안에 반영 할 수 있게)
-    * GDP
-    * GNP
-    * Unemployment Rate
-    * Nonfarm Payrolls
-    * Consumer Price Index
-    * Producer Price Index
-    * Interest Rates
-    * Money Supply (M1, M2)
-    * Exchange Rates
-    * Foreign Trade
-    * Industrial Production Index
-    * Capacity Utilization
+    - [x] GDP
+    - [x] CPIAUCSL
+    - [x] Unemployment Rate
+    - [ ] Inflation Rate
+    - [ ] Industrial Production Index
+    - [ ] M1, M2
+    - [ ] Interest Rate
 * 시장 지수 계산을 위한 기본 데이터 수집
-    * 공탐지수
-    * 버핏지수
+    - [ ] 공탐지수
+    - [ ] 버핏지수
     * etc...
 * 주요 경제 지표 발표 일정
 
