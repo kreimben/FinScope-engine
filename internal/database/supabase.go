@@ -14,16 +14,29 @@ import (
 	"github.com/kreimben/FinScope-engine/pkg/logging"
 )
 
-func CheckURLExists(cfg *config.Config, urlStr string) (bool, error) {
-	// URL encode the origin_url parameter
-	encodedURL := url.QueryEscape(urlStr)
-	requestURL := fmt.Sprintf("%s/rest/v1/finance_news?origin_url=eq.%s", cfg.SupabaseURL, encodedURL)
+type SupabaseURLQuery struct {
+	url string
+}
 
-	logging.Logger.WithField("requestURL", requestURL).Debug("Checking URL in database")
+func NewSupabaseURLQuery(cfg *config.Config, table string) *SupabaseURLQuery {
+	return &SupabaseURLQuery{
+		url: cfg.SupabaseURL + "/rest/v1/" + table + "?",
+	}
+}
 
+func (s *SupabaseURLQuery) And(key, value string) *SupabaseURLQuery {
+	s.url += fmt.Sprintf("%s=%s&", key, value)
+	return s
+}
+
+func (s *SupabaseURLQuery) Build() string {
+	return s.url
+}
+
+func GET(requestURL string, cfg *config.Config) (*http.Response, error) {
 	req, err := http.NewRequest("GET", requestURL, nil)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 	req.Header.Set("apikey", cfg.SupabaseAnonKey)
 	req.Header.Set("Authorization", "Bearer "+cfg.SupabaseAnonKey)
@@ -31,6 +44,51 @@ func CheckURLExists(cfg *config.Config, urlStr string) (bool, error) {
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
+
+	return resp, err
+}
+
+func POST(requestURL string, cfg *config.Config, jsonData []byte) (*http.Response, error) {
+	req, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("apikey", cfg.SupabaseAnonKey)
+	req.Header.Set("Authorization", "Bearer "+cfg.SupabaseAnonKey)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Prefer", "return=representation")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+
+	return resp, err
+}
+
+func DELETE(requestURL string, cfg *config.Config) (*http.Response, error) {
+	req, err := http.NewRequest("DELETE", requestURL, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("apikey", cfg.SupabaseAnonKey)
+	req.Header.Set("Authorization", "Bearer "+cfg.SupabaseAnonKey)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+
+	return resp, err
+}
+
+func CheckURLExists(cfg *config.Config, urlStr string) (bool, error) {
+	// URL encode the origin_url parameter
+	encodedURL := url.QueryEscape(urlStr)
+
+	query := NewSupabaseURLQuery(cfg, "finance_news")
+	query.And("origin_url", encodedURL)
+	requestURL := query.Build()
+
+	logging.Logger.WithField("requestURL", requestURL).Debug("Checking URL in database")
+
+	resp, err := GET(requestURL, cfg)
 	if err != nil {
 		return false, err
 	}
@@ -65,17 +123,10 @@ func InsertNews(cfg *config.Config, data models.FinanceNews) error {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/rest/v1/finance_news", cfg.SupabaseURL), bytes.NewBuffer(jsonData))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("apikey", cfg.SupabaseAnonKey)
-	req.Header.Set("Authorization", "Bearer "+cfg.SupabaseAnonKey)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Prefer", "return=representation")
+	query := NewSupabaseURLQuery(cfg, "finance_news")
+	requestURL := query.Build()
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := POST(requestURL, cfg, jsonData)
 	if err != nil {
 		return err
 	}
