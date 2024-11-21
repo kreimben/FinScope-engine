@@ -39,7 +39,7 @@ func SavePCEPI(pcepi models.PCEPI, cfg *config.Config) error {
 	defer resp.Body.Close()
 
 	// check status code
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusCreated {
 		logging.Logger.WithField("status", resp.Status).Error("Failed to save PCEPI")
 		return errors.New("failed to save PCEPI")
 	}

@@ -14,7 +14,7 @@ import (
 const UNRATE_NAME = "UNRATE"
 const UNRATE_OBSERVATION_START_DATE = "1948-01-01"
 
-func GatherUNRATE(cfg *config.Config) {
+func GatherUNRATE(cfg *config.Config) error {
 	logging.Logger.Debug("Getting UNRATE")
 
 	url := getURLQuery(UNRATE_NAME, UNRATE_OBSERVATION_START_DATE, "m", "")
@@ -23,7 +23,7 @@ func GatherUNRATE(cfg *config.Config) {
 	response, err := http.Get(url)
 	if err != nil {
 		logging.Logger.WithError(err).Error("Error getting UNRATE")
-		return
+		return err
 	}
 	defer response.Body.Close()
 
@@ -31,15 +31,15 @@ func GatherUNRATE(cfg *config.Config) {
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		logging.Logger.WithError(err).Error("Error reading UNRATE response body")
-		return
+		return err
 	}
 	err = json.Unmarshal(body, &unrate)
 	if err != nil {
 		logging.Logger.WithError(err).Error("Error unmarshalling UNRATE")
-		return
+		return err
 	}
 
 	database.DeleteAllEconomicIndicators(cfg, UNRATE_NAME)
 
-	database.SaveUNRATE(unrate, cfg)
+	return database.SaveUNRATE(unrate, cfg)
 }

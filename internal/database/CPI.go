@@ -39,7 +39,7 @@ func SaveCPI(cpi models.CPI, cfg *config.Config) error {
 	defer resp.Body.Close()
 
 	// check status code
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusCreated {
 		logging.Logger.WithField("status", resp.Status).Error("Failed to save CPI")
 		return errors.New("failed to save CPI")
 	}

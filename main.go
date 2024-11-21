@@ -34,19 +34,31 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 	}
 
 	if slices.Contains(finScopeEngineEvent.Execute, "GDP") {
-		economic_indicators.GatherGDP(cfg)
+		err := economic_indicators.GatherGDP(cfg)
+		if err != nil {
+			return err
+		}
 	}
 
 	if slices.Contains(finScopeEngineEvent.Execute, "CPI") {
-		economic_indicators.GatherCPI(cfg)
+		err := economic_indicators.GatherCPI(cfg)
+		if err != nil {
+			return err
+		}
 	}
 
 	if slices.Contains(finScopeEngineEvent.Execute, "UNRATE") {
-		economic_indicators.GatherUNRATE(cfg)
+		err := economic_indicators.GatherUNRATE(cfg)
+		if err != nil {
+			return err
+		}
 	}
 
 	if slices.Contains(finScopeEngineEvent.Execute, "PCEPI") {
-		economic_indicators.GatherPCEPI(cfg)
+		err := economic_indicators.GatherPCEPI(cfg)
+		if err != nil {
+			return err
+		}
 	}
 
 	if slices.Contains(finScopeEngineEvent.Execute, "yahoo_finance") {
@@ -60,12 +72,9 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 }
 
 func main() {
-	if os.Getenv("_LAMBDA_SERVER_PORT") != "" {
-		lambda.Start(handleRequest)
+	if os.Getenv("DEBUG") == "true" {
+		handleRequest(context.Background(), json.RawMessage(`{"execute": ["CPI", "PCEPI", "UNRATE", "GDP"]}`))
 	} else {
-		handleRequest(
-			context.Background(),
-			json.RawMessage(`{"execute": ["CPI", "PCEPI", "UNRATE", "GDP"]}`),
-		)
+		lambda.Start(handleRequest)
 	}
 }

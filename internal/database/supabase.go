@@ -25,7 +25,7 @@ func NewSupabaseURLQuery(cfg *config.Config, table string) *SupabaseURLQuery {
 }
 
 func (s *SupabaseURLQuery) Add(key, value string) *SupabaseURLQuery {
-	s.url += fmt.Sprintf("%s=%s", key, value)
+	s.url += key + "=" + value
 	return s
 }
 
@@ -88,7 +88,7 @@ func CheckURLExists(cfg *config.Config, urlStr string) (bool, error) {
 	encodedURL := url.QueryEscape(urlStr)
 
 	query := NewSupabaseURLQuery(cfg, "finance_news")
-	query.Add("origin_url", encodedURL)
+	query.Add("origin_url", "eq."+encodedURL)
 	requestURL := query.Build()
 
 	logging.Logger.WithField("requestURL", requestURL).Debug("Checking URL in database")

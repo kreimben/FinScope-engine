@@ -2,6 +2,8 @@ package database
 
 import (
 	"encoding/json"
+	"errors"
+	"net/http"
 
 	"github.com/kreimben/FinScope-engine/internal/config"
 	"github.com/kreimben/FinScope-engine/internal/models"
@@ -36,6 +38,12 @@ func SaveGDP(gdp models.GDP, cfg *config.Config) error {
 		return err
 	}
 	defer resp.Body.Close()
+
+	// check status code
+	if resp.StatusCode != http.StatusCreated {
+		logging.Logger.WithField("status", resp.Status).Error("Failed to save GDP")
+		return errors.New("failed to save GDP")
+	}
 
 	logging.Logger.WithField("status", resp.Status).Debug("SAVE STATUS")
 

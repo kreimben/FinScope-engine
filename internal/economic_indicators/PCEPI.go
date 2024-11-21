@@ -14,7 +14,7 @@ import (
 const PCEPI_NAME = "PCEPI"
 const PCEPI_OBSERVATION_START_DATE = "1960-01-01"
 
-func GatherPCEPI(cfg *config.Config) {
+func GatherPCEPI(cfg *config.Config) error {
 	logging.Logger.Debug("Getting PCEPI")
 
 	url := getURLQuery(PCEPI_NAME, PCEPI_OBSERVATION_START_DATE, "m", "pc1")
@@ -23,7 +23,7 @@ func GatherPCEPI(cfg *config.Config) {
 	response, err := http.Get(url)
 	if err != nil {
 		logging.Logger.WithError(err).Error("Error getting PCEPI")
-		return
+		return err
 	}
 	defer response.Body.Close()
 
@@ -31,15 +31,15 @@ func GatherPCEPI(cfg *config.Config) {
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		logging.Logger.WithError(err).Error("Error reading PCEPI response body")
-		return
+		return err
 	}
 	err = json.Unmarshal(body, &pcepi)
 	if err != nil {
 		logging.Logger.WithError(err).Error("Error unmarshalling PCEPI")
-		return
+		return err
 	}
 
 	database.DeleteAllEconomicIndicators(cfg, PCEPI_NAME)
 
-	database.SavePCEPI(pcepi, cfg)
+	return database.SavePCEPI(pcepi, cfg)
 }

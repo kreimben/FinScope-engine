@@ -14,7 +14,7 @@ import (
 const CPI_NAME = "CPIAUCSL"
 const CPI_OBSERVATION_START_DATE = "1947-01-01"
 
-func GatherCPI(cfg *config.Config) {
+func GatherCPI(cfg *config.Config) error {
 	logging.Logger.Debug("Getting CPI")
 
 	url := getURLQuery(CPI_NAME, CPI_OBSERVATION_START_DATE, "m", "")
@@ -23,7 +23,7 @@ func GatherCPI(cfg *config.Config) {
 	response, err := http.Get(url)
 	if err != nil {
 		logging.Logger.WithError(err).Error("Error getting CPI")
-		return
+		return err
 	}
 	defer response.Body.Close()
 
@@ -31,15 +31,15 @@ func GatherCPI(cfg *config.Config) {
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		logging.Logger.WithError(err).Error("Error reading CPI response body")
-		return
+		return err
 	}
 	err = json.Unmarshal(body, &cpi)
 	if err != nil {
 		logging.Logger.WithError(err).Error("Error unmarshalling CPI")
-		return
+		return err
 	}
 
 	database.DeleteAllEconomicIndicators(cfg, CPI_NAME)
 
-	database.SaveCPI(cpi, cfg)
+	return database.SaveCPI(cpi, cfg)
 }
