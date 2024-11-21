@@ -10,16 +10,16 @@ import (
 	"github.com/kreimben/FinScope-engine/pkg/logging"
 )
 
-func SaveCPI(cpi models.CPI, cfg *config.Config) error {
+func SavePCEPI(pcepi models.PCEPI, cfg *config.Config) error {
 	query := NewSupabaseURLQuery(cfg, "economic_indicators")
 	requestURL := query.Build()
 	logging.Logger.WithField("url", requestURL).Debug("SAVE URL")
 
 	economicIndicators := []models.EconomicIndicator{}
 
-	for _, observation := range cpi.Observations {
+	for _, observation := range pcepi.Observations {
 		economicIndicators = append(economicIndicators, models.EconomicIndicator{
-			Name:        "CPIAUCSL",
+			Name:        "PCEPI",
 			Country:     "US",
 			ReleaseDate: observation.Date.Time,
 			ActualValue: observation.Value,
@@ -27,12 +27,12 @@ func SaveCPI(cpi models.CPI, cfg *config.Config) error {
 		})
 	}
 
-	cpiJsonData, err := json.Marshal(economicIndicators)
+	pcepiJsonData, err := json.Marshal(economicIndicators)
 	if err != nil {
 		return err
 	}
 
-	resp, err := POST(requestURL, cfg, cpiJsonData)
+	resp, err := POST(requestURL, cfg, pcepiJsonData)
 	if err != nil {
 		return err
 	}
@@ -40,8 +40,8 @@ func SaveCPI(cpi models.CPI, cfg *config.Config) error {
 
 	// check status code
 	if resp.StatusCode != http.StatusOK {
-		logging.Logger.WithField("status", resp.Status).Error("Failed to save CPI")
-		return errors.New("failed to save CPI")
+		logging.Logger.WithField("status", resp.Status).Error("Failed to save PCEPI")
+		return errors.New("failed to save PCEPI")
 	}
 
 	logging.Logger.WithField("status", resp.Status).Debug("SAVE STATUS")

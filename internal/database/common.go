@@ -11,7 +11,7 @@ import (
 // delete all the data in the table
 func DeleteAllEconomicIndicators(cfg *config.Config, name string) error {
 	query := NewSupabaseURLQuery(cfg, "economic_indicators")
-	query.And("name", "eq."+name)
+	query.Add("name", "eq."+name)
 	requestURL := query.Build()
 	logging.Logger.WithField("url", requestURL).Debug("DELETE URL")
 
@@ -30,6 +30,8 @@ func DeleteAllEconomicIndicators(cfg *config.Config, name string) error {
 		logging.Logger.WithField("status", resp.Status).Error("Failed to delete GDP data")
 		return errors.New("failed to delete GDP data")
 	}
+
+	logging.Logger.WithField("status", resp.Status).Debug("DELETE STATUS")
 
 	return nil
 }

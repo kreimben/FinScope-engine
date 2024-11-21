@@ -17,7 +17,7 @@ const UNRATE_OBSERVATION_START_DATE = "1948-01-01"
 func GatherUNRATE(cfg *config.Config) {
 	logging.Logger.Debug("Getting UNRATE")
 
-	url := getURLQuery(UNRATE_NAME, UNRATE_OBSERVATION_START_DATE, "m")
+	url := getURLQuery(UNRATE_NAME, UNRATE_OBSERVATION_START_DATE, "m", "")
 	logging.Logger.WithField("url", url).Debug("FRED URL")
 
 	response, err := http.Get(url)

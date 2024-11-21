@@ -24,8 +24,13 @@ func NewSupabaseURLQuery(cfg *config.Config, table string) *SupabaseURLQuery {
 	}
 }
 
-func (s *SupabaseURLQuery) And(key, value string) *SupabaseURLQuery {
-	s.url += fmt.Sprintf("%s=%s&", key, value)
+func (s *SupabaseURLQuery) Add(key, value string) *SupabaseURLQuery {
+	s.url += fmt.Sprintf("%s=%s", key, value)
+	return s
+}
+
+func (s *SupabaseURLQuery) And() *SupabaseURLQuery {
+	s.url += "&"
 	return s
 }
 
@@ -83,7 +88,7 @@ func CheckURLExists(cfg *config.Config, urlStr string) (bool, error) {
 	encodedURL := url.QueryEscape(urlStr)
 
 	query := NewSupabaseURLQuery(cfg, "finance_news")
-	query.And("origin_url", encodedURL)
+	query.Add("origin_url", encodedURL)
 	requestURL := query.Build()
 
 	logging.Logger.WithField("requestURL", requestURL).Debug("Checking URL in database")

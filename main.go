@@ -45,6 +45,10 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 		economic_indicators.GatherUNRATE(cfg)
 	}
 
+	if slices.Contains(finScopeEngineEvent.Execute, "PCEPI") {
+		economic_indicators.GatherPCEPI(cfg)
+	}
+
 	if slices.Contains(finScopeEngineEvent.Execute, "yahoo_finance") {
 		crawler.StartFinanceYahooCrawler(cfg)
 	}
@@ -61,7 +65,7 @@ func main() {
 	} else {
 		handleRequest(
 			context.Background(),
-			json.RawMessage(`{"execute": ["UNRATE"]}`),
+			json.RawMessage(`{"execute": ["CPI", "PCEPI", "UNRATE", "GDP"]}`),
 		)
 	}
 }
