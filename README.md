@@ -26,7 +26,7 @@ Back Services for Financial Investment
     - [x] CPIAUCSL (US)
     - [x] Unemployment Rate (US)
     - [ ] Industrial Production Index
-    - [ ] M1, M2 (US)
+    - [x] M2 (US / WM2NS)
     - [x] Interest Rate (US / DFEDTARU)
     - [x] PCE (US / PCEPI)
 * 시장 지수 계산을 위한 기본 데이터 수집
