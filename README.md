@@ -29,6 +29,7 @@ Back Services for Financial Investment
     - [x] Interest Rate (US / DFEDTARU)
     - [x] PCE (US / PCEPI)
     - [x] Nonfarm Payrolls (US / PAYEMS)
+    - [x] Producer Price Index by Commodity: Final Demand (US / PPIFIS, percent, 전월대비)
 * 시장 지수 계산을 위한 기본 데이터 수집
     - [ ] 공탐지수
     - [ ] 버핏지수

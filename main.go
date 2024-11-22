@@ -82,6 +82,13 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 		}
 	}
 
+	if slices.Contains(finScopeEngineEvent.Execute, "PPIFIS") {
+		err := economic_indicators.GatherPPIFIS(cfg)
+		if err != nil {
+			return err
+		}
+	}
+
 	if slices.Contains(finScopeEngineEvent.Execute, "yahoo_finance") {
 		crawler.StartFinanceYahooCrawler(cfg)
 	}
@@ -94,7 +101,7 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 
 func main() {
 	if os.Getenv("DEBUG") == "true" {
-		handleRequest(context.Background(), json.RawMessage(`{"execute": ["PAYEMS"]}`))
+		handleRequest(context.Background(), json.RawMessage(`{"execute": ["PPIFIS"]}`))
 	} else {
 		lambda.Start(handleRequest)
 	}
