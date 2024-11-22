@@ -22,6 +22,7 @@ Back Services for Financial Investment
 * 경제 지표
     * 경제 지표는 정해진 날 딱 한번 발표 되며 기존의 데이터들은 절대로 변하지 않음
     * 한달에 몇번만, 하지만 실시간으로 빠르게 (발표 후 1분 안에 반영 할 수 있게)
+
 | Status |  Economic Indicator   | Country | Code | Release ID |
 |--------|-----------------------|---------|------|------------|
 | [x]    | GDP                   | US      | GDP | 53 |
@@ -41,6 +42,7 @@ Back Services for Financial Investment
 | [ ]    | 10-Year Treasury Constant Maturity Rate | US | GS10 |  |
 | [ ]    | Crude Oil Prices: WTI | US      | DCOILWTICO |  |
 | [ ]    | Gold Fixing Price     | US      | GOLDAMGBD228NLBM |  |
+
 * 시장 지수 계산을 위한 기본 데이터 수집
     - [ ] 공탐지수
     - [ ] 버핏지수
