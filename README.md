@@ -22,24 +22,25 @@ Back Services for Financial Investment
 * 경제 지표
     * 경제 지표는 정해진 날 딱 한번 발표 되며 기존의 데이터들은 절대로 변하지 않음
     * 한달에 몇번만, 하지만 실시간으로 빠르게 (발표 후 1분 안에 반영 할 수 있게)
-    - [x] GDP (US / GDP)
-    - [x] CPI (US / CPIAUCSL)
-    - [x] Unemployment Rate (US / UNRATE)
-    - [x] M2 (US / WM2NS)
-    - [x] Interest Rate (US / DFEDTARU)
-    - [x] PCE (US / PCEPI)
-    - [x] Nonfarm Payrolls (US / PAYEMS)
-    - [x] Producer Price Index by Commodity: Final Demand (US / PPIFIS, percent, 전월대비)
-    - [ ] Initial Claims (주간 실업수당 청구 건수, US / ICSA)
-
-    - [ ] S&P 500 (US / SP500)
-    - [ ] NASDAQ (US / IXIC)
-    - [ ] Russell 2000 (US / RUT)
-    - [ ] Dow Jones (US / DJIA)
-    - [ ] VIX (US / VIXCLS)
-    - [ ] 10-Year Treasury Constant Maturity Rate (US / GS10)
-    - [ ] Crude Oil Prices (WTI, US / DCOILWTICO)
-    - [ ] Gold Fixing Price (US / GOLDAMGBD228NLBM)
+    | Status |  Economic Indicator   | Country | Code | Release ID |
+    |--------|-----------------------|---------|------|------------|
+    | [x]    | GDP                   | US      | GDP | 53 |
+    | [x]    | CPI                   | US      | CPIAUCSL | 10 |
+    | [x]    | Unemployment Rate     | US      | UNRATE | 50 |
+    | [x]    | M2                    | US      | WM2NS | 21 |
+    | [x]    | Interest Rate         | US      | DFEDTARU | 101 |
+    | [x]    | PCE                   | US      | PCEPI | 54 |
+    | [x]    | Nonfarm Payrolls      | US      | PAYEMS | 50 |
+    | [x]    | PPI (percent, 전월대비) | US | PPIFIS | 46 |
+    | [x]    | Initial Claims (주간 실업수당 청구 건수) | US | ICSA | 180 |
+    | [ ]    | S&P 500               | US      | SP500 |  |
+    | [ ]    | NASDAQ                | US      | IXIC |  |
+    | [ ]    | Russell 2000          | US      | RUT |  |
+    | [ ]    | Dow Jones             | US      | DJIA |  |
+    | [ ]    | VIX                   | US      | VIXCLS |  |
+    | [ ]    | 10-Year Treasury Constant Maturity Rate | US | GS10 |  |
+    | [ ]    | Crude Oil Prices: WTI | US      | DCOILWTICO |  |
+    | [ ]    | Gold Fixing Price     | US      | GOLDAMGBD228NLBM |  |
 * 시장 지수 계산을 위한 기본 데이터 수집
     - [ ] 공탐지수
     - [ ] 버핏지수
