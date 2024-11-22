@@ -28,7 +28,7 @@ Back Services for Financial Investment
     - [ ] Inflation Rate (US)
     - [ ] Industrial Production Index
     - [ ] M1, M2 (US)
-    - [ ] Interest Rate (US)
+    - [x] Interest Rate (US / DFEDTARU)
     - [x] PCE (US / PCEPI)
 * 시장 지수 계산을 위한 기본 데이터 수집
     - [ ] 공탐지수

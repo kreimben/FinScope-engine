@@ -12,13 +12,13 @@ import (
 )
 
 const GDP_NAME = "GDP"
-const GDP_OBSERVATION_START_DATE = "1947-01-01"
+const GDP_OBSERVATION_START_DATE = "1948-01-01"
 
 // GatherGDP gets the GDP data from FRED and save it to the database
 func GatherGDP(cfg *config.Config) error {
 	logging.Logger.Debug("Getting GDP")
 
-	url := getURLQuery(GDP_NAME, GDP_OBSERVATION_START_DATE, "d", "")
+	url := getURLQuery(GDP_NAME, GDP_OBSERVATION_START_DATE, "q", "")
 	logging.Logger.WithField("url", url).Debug("FRED URL")
 
 	// get the response

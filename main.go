@@ -61,6 +61,13 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 		}
 	}
 
+	if slices.Contains(finScopeEngineEvent.Execute, "DFEDTARU") {
+		err := economic_indicators.GatherDFEDTARU(cfg)
+		if err != nil {
+			return err
+		}
+	}
+
 	if slices.Contains(finScopeEngineEvent.Execute, "yahoo_finance") {
 		crawler.StartFinanceYahooCrawler(cfg)
 	}
@@ -73,7 +80,7 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 
 func main() {
 	if os.Getenv("DEBUG") == "true" {
-		handleRequest(context.Background(), json.RawMessage(`{"execute": ["CPI", "PCEPI", "UNRATE", "GDP"]}`))
+		handleRequest(context.Background(), json.RawMessage(`{"execute": []}`))
 	} else {
 		lambda.Start(handleRequest)
 	}
