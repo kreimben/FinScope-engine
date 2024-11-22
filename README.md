@@ -30,6 +30,16 @@ Back Services for Financial Investment
     - [x] PCE (US / PCEPI)
     - [x] Nonfarm Payrolls (US / PAYEMS)
     - [x] Producer Price Index by Commodity: Final Demand (US / PPIFIS, percent, 전월대비)
+    - [ ] Initial Claims (주간 실업수당 청구 건수, US / ICSA)
+
+    - [ ] S&P 500 (US / SP500)
+    - [ ] NASDAQ (US / IXIC)
+    - [ ] Russell 2000 (US / RUT)
+    - [ ] Dow Jones (US / DJIA)
+    - [ ] VIX (US / VIXCLS)
+    - [ ] 10-Year Treasury Constant Maturity Rate (US / GS10)
+    - [ ] Crude Oil Prices (WTI, US / DCOILWTICO)
+    - [ ] Gold Fixing Price (US / GOLDAMGBD228NLBM)
 * 시장 지수 계산을 위한 기본 데이터 수집
     - [ ] 공탐지수
     - [ ] 버핏지수

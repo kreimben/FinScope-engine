@@ -89,6 +89,13 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 		}
 	}
 
+	if slices.Contains(finScopeEngineEvent.Execute, "ICSA") {
+		err := economic_indicators.GatherICSA(cfg)
+		if err != nil {
+			return err
+		}
+	}
+
 	if slices.Contains(finScopeEngineEvent.Execute, "yahoo_finance") {
 		crawler.StartFinanceYahooCrawler(cfg)
 	}
@@ -101,7 +108,7 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 
 func main() {
 	if os.Getenv("DEBUG") == "true" {
-		handleRequest(context.Background(), json.RawMessage(`{"execute": ["PPIFIS"]}`))
+		handleRequest(context.Background(), json.RawMessage(`{"execute": ["ICSA"]}`))
 	} else {
 		lambda.Start(handleRequest)
 	}
