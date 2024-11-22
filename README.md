@@ -25,7 +25,6 @@ Back Services for Financial Investment
     - [x] GDP (US)
     - [x] CPIAUCSL (US)
     - [x] Unemployment Rate (US)
-    - [ ] Industrial Production Index
     - [x] M2 (US / WM2NS)
     - [x] Interest Rate (US / DFEDTARU)
     - [x] PCE (US / PCEPI)
