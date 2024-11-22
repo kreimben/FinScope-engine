@@ -10,30 +10,29 @@ import (
 	"github.com/kreimben/FinScope-engine/pkg/logging"
 )
 
-// save the data to the database
-func SaveGDP(gdp models.GDP, cfg *config.Config) error {
+func SavePAYEMS(payems models.PAYEMS, cfg *config.Config) error {
 	query := NewSupabaseURLQuery(cfg, "economic_indicators")
 	requestURL := query.Build()
 	logging.Logger.WithField("url", requestURL).Debug("SAVE URL")
-	// GDP to EconomicIndicator
+
 	economicIndicators := []models.EconomicIndicator{}
 
-	for _, observation := range gdp.Observations {
+	for _, observation := range payems.Observations {
 		economicIndicators = append(economicIndicators, models.EconomicIndicator{
-			Name:        "GDP",
+			Name:        "PAYEMS",
 			Country:     "US",
 			ReleaseDate: observation.Date.Time,
 			ActualValue: observation.Value,
-			Unit:        "USD Billion",
+			Unit:        "Thousands of Persons", // Update the unit here
 		})
 	}
 
-	gdpJsonData, err := json.Marshal(economicIndicators)
+	payemsJsonData, err := json.Marshal(economicIndicators)
 	if err != nil {
 		return err
 	}
 
-	resp, err := POST(requestURL, cfg, gdpJsonData)
+	resp, err := POST(requestURL, cfg, payemsJsonData)
 	if err != nil {
 		return err
 	}
@@ -41,8 +40,8 @@ func SaveGDP(gdp models.GDP, cfg *config.Config) error {
 
 	// check status code
 	if resp.StatusCode != http.StatusCreated {
-		logging.Logger.WithField("status", resp.Status).Error("Failed to save GDP")
-		return errors.New("failed to save GDP")
+		logging.Logger.WithField("status", resp.Status).Error("Failed to save PAYEMS")
+		return errors.New("failed to save PAYEMS")
 	}
 
 	logging.Logger.WithField("status", resp.Status).Debug("SAVE STATUS")

@@ -75,6 +75,13 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 		}
 	}
 
+	if slices.Contains(finScopeEngineEvent.Execute, "PAYEMS") {
+		err := economic_indicators.GatherPAYEMS(cfg)
+		if err != nil {
+			return err
+		}
+	}
+
 	if slices.Contains(finScopeEngineEvent.Execute, "yahoo_finance") {
 		crawler.StartFinanceYahooCrawler(cfg)
 	}
@@ -87,7 +94,7 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 
 func main() {
 	if os.Getenv("DEBUG") == "true" {
-		handleRequest(context.Background(), json.RawMessage(`{"execute": ["WM2NS"]}`))
+		handleRequest(context.Background(), json.RawMessage(`{"execute": ["PAYEMS"]}`))
 	} else {
 		lambda.Start(handleRequest)
 	}

@@ -22,12 +22,13 @@ Back Services for Financial Investment
 * 경제 지표
     * 경제 지표는 정해진 날 딱 한번 발표 되며 기존의 데이터들은 절대로 변하지 않음
     * 한달에 몇번만, 하지만 실시간으로 빠르게 (발표 후 1분 안에 반영 할 수 있게)
-    - [x] GDP (US)
-    - [x] CPIAUCSL (US)
-    - [x] Unemployment Rate (US)
+    - [x] GDP (US / GDP)
+    - [x] CPI (US / CPIAUCSL)
+    - [x] Unemployment Rate (US / UNRATE)
     - [x] M2 (US / WM2NS)
     - [x] Interest Rate (US / DFEDTARU)
     - [x] PCE (US / PCEPI)
+    - [x] Nonfarm Payrolls (US / PAYEMS)
 * 시장 지수 계산을 위한 기본 데이터 수집
     - [ ] 공탐지수
     - [ ] 버핏지수
