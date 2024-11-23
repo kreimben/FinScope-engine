@@ -17,7 +17,7 @@ const ICSA_OBSERVATION_START_DATE = "1967-01-01"
 func GatherICSA(cfg *config.Config) error {
 	logging.Logger.Debug("Getting ICSA")
 
-	url := getURLQuery(ICSA_NAME, ICSA_OBSERVATION_START_DATE, "w", "")
+	url := getFREDQuery(ICSA_NAME, ICSA_OBSERVATION_START_DATE, "w", "")
 	logging.Logger.WithField("url", url).Debug("FRED URL")
 
 	response, err := http.Get(url)

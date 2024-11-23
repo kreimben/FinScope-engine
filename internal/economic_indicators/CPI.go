@@ -17,7 +17,7 @@ const CPI_OBSERVATION_START_DATE = "1947-01-01"
 func GatherCPI(cfg *config.Config) error {
 	logging.Logger.Debug("Getting CPI")
 
-	url := getURLQuery(CPI_NAME, CPI_OBSERVATION_START_DATE, "m", "")
+	url := getFREDQuery(CPI_NAME, CPI_OBSERVATION_START_DATE, "m", "")
 	logging.Logger.WithField("url", url).Debug("FRED URL")
 
 	response, err := http.Get(url)

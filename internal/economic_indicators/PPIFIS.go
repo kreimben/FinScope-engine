@@ -17,7 +17,7 @@ const PPIFIS_OBSERVATION_START_DATE = "2009-12-01"
 func GatherPPIFIS(cfg *config.Config) error {
 	logging.Logger.Debug("Getting PPIFIS")
 
-	url := getURLQuery(PPIFIS_NAME, PPIFIS_OBSERVATION_START_DATE, "m", "pch")
+	url := getFREDQuery(PPIFIS_NAME, PPIFIS_OBSERVATION_START_DATE, "m", "pch")
 	logging.Logger.WithField("url", url).Debug("FRED URL")
 
 	response, err := http.Get(url)

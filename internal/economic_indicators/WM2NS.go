@@ -17,7 +17,7 @@ const WM2NS_OBSERVATION_START_DATE = "1980-12-01"
 func GatherWM2NS(cfg *config.Config) error {
 	logging.Logger.Debug("Getting WM2NS")
 
-	url := getURLQuery(WM2NS_NAME, WM2NS_OBSERVATION_START_DATE, "m", "")
+	url := getFREDQuery(WM2NS_NAME, WM2NS_OBSERVATION_START_DATE, "m", "")
 	logging.Logger.WithField("url", url).Debug("FRED URL")
 
 	response, err := http.Get(url)

@@ -18,7 +18,7 @@ const GDP_OBSERVATION_START_DATE = "1948-01-01"
 func GatherGDP(cfg *config.Config) error {
 	logging.Logger.Debug("Getting GDP")
 
-	url := getURLQuery(GDP_NAME, GDP_OBSERVATION_START_DATE, "q", "")
+	url := getFREDQuery(GDP_NAME, GDP_OBSERVATION_START_DATE, "q", "")
 	logging.Logger.WithField("url", url).Debug("FRED URL")
 
 	// get the response

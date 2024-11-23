@@ -17,7 +17,7 @@ const PAYEMS_OBSERVATION_START_DATE = "1939-01-01"
 func GatherPAYEMS(cfg *config.Config) error {
 	logging.Logger.Debug("Getting PAYEMS")
 
-	url := getURLQuery(PAYEMS_NAME, PAYEMS_OBSERVATION_START_DATE, "m", "")
+	url := getFREDQuery(PAYEMS_NAME, PAYEMS_OBSERVATION_START_DATE, "m", "")
 	logging.Logger.WithField("url", url).Debug("FRED URL")
 
 	response, err := http.Get(url)

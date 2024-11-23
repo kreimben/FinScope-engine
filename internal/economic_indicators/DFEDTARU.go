@@ -17,7 +17,7 @@ const DFEDTARU_OBSERVATION_START_DATE = "2009-01-01"
 func GatherDFEDTARU(cfg *config.Config) error {
 	logging.Logger.Debug("Getting DFEDTARU")
 
-	url := getURLQuery(DFEDTARU_NAME, DFEDTARU_OBSERVATION_START_DATE, "m", "")
+	url := getFREDQuery(DFEDTARU_NAME, DFEDTARU_OBSERVATION_START_DATE, "m", "")
 	logging.Logger.WithField("url", url).Debug("FRED URL")
 
 	response, err := http.Get(url)

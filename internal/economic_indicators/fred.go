@@ -8,7 +8,7 @@ func FRED_API_KEY() string {
 	return os.Getenv("FRED_API_KEY")
 }
 
-func getURLQuery(seriesID string, observationStartDate string, frequency string, units string) string {
+func getFREDQuery(seriesID string, observationStartDate string, frequency string, units string) string {
 	query := NewFSQuery(FRED_OBSERVATIONS_BASE_URL)
 	query.Add("api_key", FRED_API_KEY()).And()
 	query.Add("series_id", seriesID).And()

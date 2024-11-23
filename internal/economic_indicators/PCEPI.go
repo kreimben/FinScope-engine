@@ -17,7 +17,7 @@ const PCEPI_OBSERVATION_START_DATE = "1960-01-01"
 func GatherPCEPI(cfg *config.Config) error {
 	logging.Logger.Debug("Getting PCEPI")
 
-	url := getURLQuery(PCEPI_NAME, PCEPI_OBSERVATION_START_DATE, "m", "pc1")
+	url := getFREDQuery(PCEPI_NAME, PCEPI_OBSERVATION_START_DATE, "m", "pc1")
 	logging.Logger.WithField("url", url).Debug("FRED URL")
 
 	response, err := http.Get(url)
