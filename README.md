@@ -44,9 +44,12 @@ Back Services for Financial Investment
 | [ ]    | Gold Fixing Price     | US      | GOLDAMGBD228NLBM |  |
 
 * 시장 지수 계산을 위한 기본 데이터 수집
-    - [ ] 공탐지수
-    - [ ] 버핏지수
-    * etc...
+
+| Status | Index Name |
+|--------|------------|
+| [ ]    | 공탐지수     |
+| [x]    | 버핏지수     |
+
 * 주요 경제 지표 발표 일정
 
 ## Tech Stack
