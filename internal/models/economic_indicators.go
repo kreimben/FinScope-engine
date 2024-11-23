@@ -1,11 +1,8 @@
 package models
 
-import (
-	"time"
-)
+import "time"
 
 type EconomicIndicator struct {
-	// ID            string    `json:"id"`      // UUID
 	Name          string    `json:"name"`    // GDP, CPI, etc.
 	Country       string    `json:"country"` // US, EU, etc.
 	ReleaseDate   time.Time `json:"release_date"`
