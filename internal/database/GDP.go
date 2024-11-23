@@ -101,7 +101,7 @@ func GetUSGDPByDate(cfg *config.Config, date time.Time) (models.GDP, error) {
 
 	if len(economicIndicators) > 0 {
 		gdp.Observations = append(gdp.Observations, models.Observation{
-			Date:  models.CustomDate{economicIndicators[0].ReleaseDate},
+			Date:  models.CustomDate{Time: economicIndicators[0].ReleaseDate},
 			Value: economicIndicators[0].ActualValue,
 		})
 	} else {
@@ -112,46 +112,3 @@ func GetUSGDPByDate(cfg *config.Config, date time.Time) (models.GDP, error) {
 	logging.Logger.WithField("gdp", gdp).Debug("GET GDP")
 	return gdp, nil
 }
-
-// func GetUSGDPBetweenDates(cfg *config.Config, startDate, endDate time.Time) ([]models.GDP, error) {
-// 	query := NewSupabaseURLQuery(cfg, "economic_indicators")
-// 	query.Add("name", "eq.GDP").And()
-// 	query.Add("country", "eq.US").And()
-// 	query.Add("select", "*").And()
-// 	query.Add("release_date", "gte."+startDate.Format("2006-01-02")).And()
-// 	query.Add("release_date", "lte."+endDate.Format("2006-01-02")).And()
-// 	query.Add("order", "release_date.asc")
-// 	requestURL := query.Build()
-// 	logging.Logger.WithField("url", requestURL).Debug("GET GDP BETWEEN DATES URL")
-
-// 	resp, err := GET(requestURL, cfg)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer resp.Body.Close()
-
-// 	if resp.StatusCode != http.StatusOK {
-// 		logging.Logger.WithField("status", resp.Status).Error("Failed to get GDP between dates")
-// 		return nil, errors.New("failed to get GDP between dates")
-// 	}
-
-// 	var economicIndicators []models.EconomicIndicator
-// 	if err := json.NewDecoder(resp.Body).Decode(&economicIndicators); err != nil {
-// 		return nil, err
-// 	}
-
-// 	gdpData := []models.GDP{}
-// 	for _, ei := range economicIndicators {
-// 		gdpData = append(gdpData, models.GDP{
-// 			Observations: []models.Observation{
-// 				{
-// 					Date:  models.CustomDate{ei.ReleaseDate},
-// 					Value: ei.ActualValue,
-// 				},
-// 			},
-// 		})
-// 	}
-
-// 	logging.Logger.WithField("gdpData", gdpData).Debug("GET GDP BETWEEN DATES")
-// 	return gdpData, nil
-// }
