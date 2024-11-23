@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"os"
 	"slices"
+	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/kreimben/FinScope-engine/internal/config"
 	"github.com/kreimben/FinScope-engine/internal/crawler"
 	"github.com/kreimben/FinScope-engine/internal/economic_indicators"
+	"github.com/kreimben/FinScope-engine/internal/valuation_indicators"
 	"github.com/kreimben/FinScope-engine/pkg/logging"
 )
 
@@ -33,6 +35,7 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 		return err
 	}
 
+	// Economic Indicators
 	if slices.Contains(finScopeEngineEvent.Execute, "GDP") {
 		err := economic_indicators.GatherGDP(cfg)
 		if err != nil {
@@ -96,6 +99,20 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 		}
 	}
 
+	// Valuation Indicators
+	if slices.Contains(finScopeEngineEvent.Execute, "Buffett_Indicator") {
+		err := valuation_indicators.CalculateAndSaveHistoricalBuffettIndicator(
+			cfg,
+			// time.Date(2020, 3, 10, 0, 0, 0, 0, time.UTC), // 1990-01-01
+			time.Now().Add(-1*time.Hour*24),
+			time.Now(),
+		)
+		if err != nil {
+			return err
+		}
+	}
+
+	// News
 	if slices.Contains(finScopeEngineEvent.Execute, "yahoo_finance") {
 		crawler.StartFinanceYahooCrawler(cfg)
 	}
@@ -108,7 +125,7 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 
 func main() {
 	if os.Getenv("DEBUG") == "true" {
-		handleRequest(context.Background(), json.RawMessage(`{"execute": ["ICSA"]}`))
+		handleRequest(context.Background(), json.RawMessage(`{"execute": ["Buffett_Indicator"]}`))
 	} else {
 		lambda.Start(handleRequest)
 	}
