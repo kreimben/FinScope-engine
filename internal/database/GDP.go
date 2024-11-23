@@ -3,7 +3,9 @@ package database
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
+	"time"
 
 	"github.com/kreimben/FinScope-engine/internal/config"
 	"github.com/kreimben/FinScope-engine/internal/models"
@@ -39,8 +41,15 @@ func SaveGDP(gdp models.GDP, cfg *config.Config) error {
 	}
 	defer resp.Body.Close()
 
+	// Optionally read and log the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	logging.Logger.WithField("response_body", string(body)).Debug("SAVE GDP RESPONSE BODY")
+
 	// check status code
-	if resp.StatusCode != http.StatusCreated {
+	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
 		logging.Logger.WithField("status", resp.Status).Error("Failed to save GDP")
 		return errors.New("failed to save GDP")
 	}
@@ -49,3 +58,100 @@ func SaveGDP(gdp models.GDP, cfg *config.Config) error {
 
 	return nil
 }
+
+// GetUSGDPByDate retrieves the GDP data for the US by a specific date
+func GetUSGDPByDate(cfg *config.Config, date time.Time) (models.GDP, error) {
+	query := NewSupabaseURLQuery(cfg, "economic_indicators")
+	query.Add("name", "eq.GDP").And()
+	query.Add("country", "eq.US").And()
+	query.Add("select", "name,country,release_date,actual_value,unit").And()
+	query.Add("release_date", "lte."+date.Format("2006-01-02T15:04:05Z")).And()
+	query.Add("order", "release_date.desc").And()
+	query.Add("limit", "1")
+	requestURL := query.Build()
+	logging.Logger.WithField("url", requestURL).Debug("GET GDP URL")
+
+	resp, err := GET(requestURL, cfg)
+	if err != nil {
+		return models.GDP{}, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		logging.Logger.WithField("status", resp.Status).Error("Failed to get GDP")
+		return models.GDP{}, errors.New("failed to get GDP")
+	}
+
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return models.GDP{}, err
+	}
+	logging.Logger.WithField("body", string(body)).Debug("GET GDP RESPONSE BODY")
+
+	var economicIndicators []models.EconomicIndicator
+	// Unmarshal the read body
+	if err := json.Unmarshal(body, &economicIndicators); err != nil {
+		return models.GDP{}, err
+	}
+
+	gdp := models.GDP{
+		Observations: []models.Observation{},
+	}
+
+	if len(economicIndicators) > 0 {
+		gdp.Observations = append(gdp.Observations, models.Observation{
+			Date:  models.CustomDate{economicIndicators[0].ReleaseDate},
+			Value: economicIndicators[0].ActualValue,
+		})
+	} else {
+		logging.Logger.Error("No GDP data found for the given date")
+		return models.GDP{}, errors.New("no GDP data found")
+	}
+
+	logging.Logger.WithField("gdp", gdp).Debug("GET GDP")
+	return gdp, nil
+}
+
+// func GetUSGDPBetweenDates(cfg *config.Config, startDate, endDate time.Time) ([]models.GDP, error) {
+// 	query := NewSupabaseURLQuery(cfg, "economic_indicators")
+// 	query.Add("name", "eq.GDP").And()
+// 	query.Add("country", "eq.US").And()
+// 	query.Add("select", "*").And()
+// 	query.Add("release_date", "gte."+startDate.Format("2006-01-02")).And()
+// 	query.Add("release_date", "lte."+endDate.Format("2006-01-02")).And()
+// 	query.Add("order", "release_date.asc")
+// 	requestURL := query.Build()
+// 	logging.Logger.WithField("url", requestURL).Debug("GET GDP BETWEEN DATES URL")
+
+// 	resp, err := GET(requestURL, cfg)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer resp.Body.Close()
+
+// 	if resp.StatusCode != http.StatusOK {
+// 		logging.Logger.WithField("status", resp.Status).Error("Failed to get GDP between dates")
+// 		return nil, errors.New("failed to get GDP between dates")
+// 	}
+
+// 	var economicIndicators []models.EconomicIndicator
+// 	if err := json.NewDecoder(resp.Body).Decode(&economicIndicators); err != nil {
+// 		return nil, err
+// 	}
+
+// 	gdpData := []models.GDP{}
+// 	for _, ei := range economicIndicators {
+// 		gdpData = append(gdpData, models.GDP{
+// 			Observations: []models.Observation{
+// 				{
+// 					Date:  models.CustomDate{ei.ReleaseDate},
+// 					Value: ei.ActualValue,
+// 				},
+// 			},
+// 		})
+// 	}
+
+// 	logging.Logger.WithField("gdpData", gdpData).Debug("GET GDP BETWEEN DATES")
+// 	return gdpData, nil
+// }
