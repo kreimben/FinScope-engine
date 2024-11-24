@@ -99,6 +99,21 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 		}
 	}
 
+	// FRED Release Schedules
+	if slices.Contains(finScopeEngineEvent.Execute, "FRED_Gather_Release_Schedules") {
+		err := economic_indicators.GatherReleaseSchedules(cfg)
+		if err != nil {
+			return err
+		}
+	}
+
+	if slices.Contains(finScopeEngineEvent.Execute, "FRED_Gather_Today_Release_Indicator_And_Mark_As_Done") {
+		err := economic_indicators.GatherTodayReleaseIndicatorAndMarkAsDone(cfg)
+		if err != nil {
+			return err
+		}
+	}
+
 	// Valuation Indicators
 	if slices.Contains(finScopeEngineEvent.Execute, "Buffett_Indicator") {
 		err := valuation_indicators.CalculateAndSaveHistoricalBuffettIndicator(
@@ -119,12 +134,13 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 	if slices.Contains(finScopeEngineEvent.Execute, "benzinga") {
 		crawler.StartBenzingaCrawler(cfg)
 	}
+
 	return nil
 }
 
 func main() {
 	if os.Getenv("DEBUG") == "true" {
-		handleRequest(context.Background(), json.RawMessage(`{"execute": ["Buffett_Indicator"]}`))
+		handleRequest(context.Background(), json.RawMessage(`{"execute": ["FRED_Gather_Today_Release_Indicator_And_Mark_As_Done"]}`))
 	} else {
 		lambda.Start(handleRequest)
 	}
