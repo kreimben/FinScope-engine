@@ -6,4 +6,6 @@ chmod +x bootstrap
 
 zip bootstrap.zip bootstrap
 
+rm bootstrap
+
 open .
