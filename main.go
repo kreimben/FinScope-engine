@@ -103,7 +103,6 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 	if slices.Contains(finScopeEngineEvent.Execute, "Buffett_Indicator") {
 		err := valuation_indicators.CalculateAndSaveHistoricalBuffettIndicator(
 			cfg,
-			// time.Date(2020, 3, 10, 0, 0, 0, 0, time.UTC), // 1990-01-01
 			time.Now().Add(-1*time.Hour*24),
 			time.Now(),
 		)
