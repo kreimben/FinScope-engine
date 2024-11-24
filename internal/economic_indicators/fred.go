@@ -58,7 +58,7 @@ func getFREDQuery(seriesID string, observationStartDate string, frequency string
 }
 
 func GatherReleaseSchedules(cfg *config.Config) error {
-	logging.Logger.Debug("Getting Release Schedules")
+	logging.Logger.Debug("[FRED] Gathering Release Schedules")
 
 	for seriesID, releaseID := range releaseIDs {
 		query := NewFSQuery("https://api.stlouisfed.org/fred/release/dates")
@@ -100,11 +100,13 @@ func GatherReleaseSchedules(cfg *config.Config) error {
 			}
 		}
 	}
+	logging.Logger.Debug("[FRED] Completed gathering release schedules")
 
 	return nil
 }
 
 func GatherTodayReleaseIndicatorAndMarkAsDone(cfg *config.Config) error {
+	logging.Logger.Debug("[FRED] Gathering today's release indicator and marking as done")
 	today := time.Now().UTC()
 
 	for seriesID := range releaseIDs {
@@ -120,7 +122,7 @@ func GatherTodayReleaseIndicatorAndMarkAsDone(cfg *config.Config) error {
 			err = releaseIDFunctions[seriesID](cfg)
 			if err != nil {
 				logging.Logger.WithError(err).Error("Error gathering indicator")
-				continue
+				return err // Return early without marking as done
 			}
 
 			// check latest data whether today is the day.
@@ -131,11 +133,17 @@ func GatherTodayReleaseIndicatorAndMarkAsDone(cfg *config.Config) error {
 			}
 
 			if latestData.Format("2006-01-02") == today.Format("2006-01-02") {
-				// Mark the release date as done
-				database.MarkReleaseDateAsDone(seriesID, today, cfg)
+				// Mark the release date as done only after successful save
+				err = database.MarkReleaseDateAsDone(seriesID, today, cfg)
+				if err != nil {
+					logging.Logger.WithError(err).Error("Error marking release date as done")
+					return err // Handle error appropriately
+				}
 			}
 		}
 	}
+
+	logging.Logger.Debug("[FRED] Completed gathering today's release indicator and marking as done")
 
 	return nil
 }

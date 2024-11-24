@@ -64,6 +64,7 @@ func CalculateBuffettIndicator(cfg *config.Config, date time.Time) (float64, err
 }
 
 func CalculateAndSaveHistoricalBuffettIndicator(cfg *config.Config, startDate, endDate time.Time) error {
+	logging.Logger.Info("[Buffett_Indicator] Calculating and saving historical Buffett Indicator")
 	// err := database.DeleteAllBuffettIndicators(cfg)
 	// if err != nil {
 	// 	logging.Logger.WithError(err).Error("Error deleting all Buffett Indicators")
@@ -100,5 +101,6 @@ func CalculateAndSaveHistoricalBuffettIndicator(cfg *config.Config, startDate, e
 		time.Sleep(300 * time.Millisecond)
 	}
 
+	logging.Logger.Info("[Buffett_Indicator] Completed calculating and saving historical Buffett Indicator")
 	return nil
 }

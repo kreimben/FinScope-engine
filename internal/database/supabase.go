@@ -230,7 +230,7 @@ func MarkReleaseDateAsDone(seriesID string, releaseDate time.Time, cfg *config.C
 		return err
 	}
 
-	query := NewSupabaseURLQuery(cfg, "economic_indicator_release_schedule")
+	query := NewSupabaseURLQuery(cfg, "economic_indicator_release_schedules")
 	query.Add("series_id", "eq."+seriesID).And()
 	query.Add("release_date", "eq."+releaseDate.Format("2006-01-02"))
 	requestURL := query.Build()
@@ -242,9 +242,11 @@ func MarkReleaseDateAsDone(seriesID string, releaseDate time.Time, cfg *config.C
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
+		logging.Logger.WithField("status", resp.Status).Error("Failed to mark release date as done")
 		return fmt.Errorf("failed to mark release date as done: %s", resp.Status)
 	}
 
+	logging.Logger.WithField("series_id", seriesID).WithField("release_date", releaseDate).Info("Marked release date as done")
 	return nil
 }
 

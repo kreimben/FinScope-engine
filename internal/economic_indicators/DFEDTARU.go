@@ -15,7 +15,7 @@ const DFEDTARU_NAME = "DFEDTARU"
 const DFEDTARU_OBSERVATION_START_DATE = "2009-01-01"
 
 func GatherDFEDTARU(cfg *config.Config) error {
-	logging.Logger.Debug("Getting DFEDTARU")
+	logging.Logger.Info("[DFEDTARU] Starting GatherDFEDTARU")
 
 	url := getFREDQuery(DFEDTARU_NAME, DFEDTARU_OBSERVATION_START_DATE, "d", "")
 	logging.Logger.WithField("url", url).Debug("FRED URL")
@@ -39,7 +39,19 @@ func GatherDFEDTARU(cfg *config.Config) error {
 		return err
 	}
 
-	database.DeleteAllEconomicIndicators(cfg, DFEDTARU_NAME)
+	err = database.DeleteAllEconomicIndicators(cfg, DFEDTARU_NAME)
+	if err != nil {
+		logging.Logger.WithError(err).Error("Failed to delete old DFEDTARU data")
+		return err
+	}
+	logging.Logger.Debug("Successfully deleted old DFEDTARU data")
 
-	return database.SaveDFEDTARU(dfedtaru, cfg)
+	err = database.SaveDFEDTARU(dfedtaru, cfg)
+	if err != nil {
+		logging.Logger.WithError(err).Error("Failed to save DFEDTARU data")
+		return err
+	}
+
+	logging.Logger.Info("[DFEDTARU] Completed GatherDFEDTARU")
+	return nil
 }
