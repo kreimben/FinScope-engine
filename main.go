@@ -140,7 +140,7 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 
 func main() {
 	if os.Getenv("DEBUG") == "true" {
-		handleRequest(context.Background(), json.RawMessage(`{"execute": ["DFEDTARU"]}`))
+		handleRequest(context.Background(), json.RawMessage(`{"execute": ["FRED_Gather_Today_Release_Indicator_And_Mark_As_Done"]}`))
 	} else {
 		lambda.Start(handleRequest)
 	}
