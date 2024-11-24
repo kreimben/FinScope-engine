@@ -216,8 +216,6 @@ func GetNextReleaseDate(seriesID string, cfg *config.Config) (models.ReleaseDate
 		logging.Logger.WithField("body", string(body)).Error("Failed to decode response")
 		return models.ReleaseDate{}, err
 	}
-	logging.Logger.WithField("body", string(body)).Debug("Release date")
-	logging.Logger.WithField("releaseDate", releaseDate).Debug("Release date")
 
 	return releaseDate[0], nil
 }
