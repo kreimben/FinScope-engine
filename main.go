@@ -24,7 +24,7 @@ func init() {
 }
 
 type FinScopeEngineEvent struct {
-	Execute []string `json:"execute"` //
+	Execute []string `json:"execute"`
 }
 
 func handleRequest(ctx context.Context, event json.RawMessage) error {
@@ -140,7 +140,7 @@ func handleRequest(ctx context.Context, event json.RawMessage) error {
 
 func main() {
 	if os.Getenv("DEBUG") == "true" {
-		handleRequest(context.Background(), json.RawMessage(`{"execute": ["FRED_Gather_Today_Release_Indicator_And_Mark_As_Done"]}`))
+		handleRequest(context.Background(), json.RawMessage(`{"execute": ["DFEDTARU"]}`)) //  FRED_Gather_Today_Release_Indicator_And_Mark_As_Done
 	} else {
 		lambda.Start(handleRequest)
 	}
