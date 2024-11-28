@@ -217,6 +217,10 @@ func GetNextUndoneReleaseDate(seriesID string, cfg *config.Config) (models.Relea
 		return models.ReleaseDate{}, err
 	}
 
+	if len(releaseDate) == 0 {
+		return models.ReleaseDate{}, fmt.Errorf("no release dates found")
+	}
+
 	return releaseDate[0], nil
 }
 
