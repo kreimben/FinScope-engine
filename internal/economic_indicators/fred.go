@@ -111,13 +111,13 @@ func GatherTodayReleaseIndicatorAndMarkAsDone(cfg *config.Config) error {
 
 	for seriesID := range releaseIDs {
 		// Get the next release date
-		releaseDate, err := database.GetNextReleaseDate(seriesID, cfg)
+		releaseDate, err := database.GetNextUndoneReleaseDate(seriesID, cfg)
 		if err != nil {
 			logging.Logger.WithError(err).Error("Error getting next release date")
 			continue
 		}
 
-		if releaseDate.ReleaseDate.Format("2006-01-02") == today.Format("2006-01-02") {
+		if releaseDate.ReleaseDate.Format("2006-01-02") <= today.Format("2006-01-02") {
 			// Gather the indicator
 			err = releaseIDFunctions[seriesID](cfg)
 			if err != nil {
@@ -132,9 +132,9 @@ func GatherTodayReleaseIndicatorAndMarkAsDone(cfg *config.Config) error {
 				continue
 			}
 
-			if latestData.Format("2006-01-02") == today.Format("2006-01-02") {
+			if latestData.Format("2006-01-02") <= today.Format("2006-01-02") {
 				// Mark the release date as done only after successful save
-				err = database.MarkReleaseDateAsDone(seriesID, today, cfg)
+				err = database.MarkReleaseDateAsDone(seriesID, releaseDate.ReleaseDate, cfg)
 				if err != nil {
 					logging.Logger.WithError(err).Error("Error marking release date as done")
 					return err // Handle error appropriately

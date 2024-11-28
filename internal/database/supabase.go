@@ -191,11 +191,11 @@ func SaveReleaseDate(seriesID string, releaseDate time.Time, cfg *config.Config)
 	return nil
 }
 
-func GetNextReleaseDate(seriesID string, cfg *config.Config) (models.ReleaseDate, error) {
+func GetNextUndoneReleaseDate(seriesID string, cfg *config.Config) (models.ReleaseDate, error) {
 	query := NewSupabaseURLQuery(cfg, "economic_indicator_release_schedules")
 	query.Add("done", "eq.false").And()
 	query.Add("series_id", "eq."+seriesID).And()
-	query.Add("release_date", "gte."+time.Now().UTC().Format("2006-01-02")).And()
+	// query.Add("release_date", "gte."+time.Now().UTC().Format("2006-01-02")).And()
 	query.Add("order", "release_date.asc").And()
 	query.Add("limit", "1")
 	requestURL := query.Build()
