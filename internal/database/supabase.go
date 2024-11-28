@@ -161,10 +161,9 @@ func InsertNews(cfg *config.Config, data models.FinanceNews) error {
 }
 
 func SaveReleaseDate(seriesID string, releaseDate time.Time, cfg *config.Config) error {
-	data := map[string]interface{}{
-		"series_id":    seriesID,
-		"release_date": releaseDate.Format(time.RFC3339),
-		"done":         false,
+	data := models.ReleaseDate{
+		SeriesID:    seriesID,
+		ReleaseDate: releaseDate,
 	}
 
 	jsonData, err := json.Marshal(data)
@@ -172,10 +171,28 @@ func SaveReleaseDate(seriesID string, releaseDate time.Time, cfg *config.Config)
 		return err
 	}
 
+	// Check if release date already exists
 	query := NewSupabaseURLQuery(cfg, "economic_indicator_release_schedules")
+	query.Add("series_id", "eq."+seriesID).And()
+	query.Add("release_date", "eq."+releaseDate.Format("2006-01-02"))
 	requestURL := query.Build()
 
-	resp, err := POST(requestURL, cfg, jsonData)
+	resp, err := GET(requestURL, cfg)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusOK {
+		logging.Logger.WithField("data", data).Debug("Release date already exists")
+		return nil
+	}
+
+	// Save release date
+	query = NewSupabaseURLQuery(cfg, "economic_indicator_release_schedules")
+	requestURL = query.Build()
+
+	resp, err = POST(requestURL, cfg, jsonData)
 	if err != nil {
 		return err
 	}
@@ -188,6 +205,8 @@ func SaveReleaseDate(seriesID string, releaseDate time.Time, cfg *config.Config)
 		return fmt.Errorf("failed to save release date: %s", resp.Status)
 	}
 
+	logging.Logger.WithField("data", data).Info("Saved release date")
+
 	return nil
 }
 
@@ -195,7 +214,6 @@ func GetNextUndoneReleaseDate(seriesID string, cfg *config.Config) (models.Relea
 	query := NewSupabaseURLQuery(cfg, "economic_indicator_release_schedules")
 	query.Add("done", "eq.false").And()
 	query.Add("series_id", "eq."+seriesID).And()
-	// query.Add("release_date", "gte."+time.Now().UTC().Format("2006-01-02")).And()
 	query.Add("order", "release_date.asc").And()
 	query.Add("limit", "1")
 	requestURL := query.Build()
@@ -211,17 +229,17 @@ func GetNextUndoneReleaseDate(seriesID string, cfg *config.Config) (models.Relea
 		return models.ReleaseDate{}, err
 	}
 
-	var releaseDate []models.ReleaseDate
-	if err := json.Unmarshal(body, &releaseDate); err != nil {
+	var releaseDates []models.ReleaseDate
+	if err := json.Unmarshal(body, &releaseDates); err != nil {
 		logging.Logger.WithField("body", string(body)).Error("Failed to decode response")
 		return models.ReleaseDate{}, err
 	}
 
-	if len(releaseDate) == 0 {
+	if len(releaseDates) == 0 {
 		return models.ReleaseDate{}, fmt.Errorf("no release dates found")
 	}
 
-	return releaseDate[0], nil
+	return releaseDates[0], nil
 }
 
 func MarkReleaseDateAsDone(seriesID string, releaseDate time.Time, cfg *config.Config) error {

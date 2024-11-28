@@ -26,10 +26,14 @@ func (vi *ValuationIndicator) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	// Parse the date string
-	parsedTime, err := time.Parse("2006-01-02", aux.Date)
+	// Attempt to parse the date string in RFC3339 format
+	parsedTime, err := time.Parse(time.RFC3339, aux.Date)
 	if err != nil {
-		return fmt.Errorf("error parsing date: %v", err)
+		// If RFC3339 fails, try "2006-01-02" format
+		parsedTime, err = time.Parse("2006-01-02", aux.Date)
+		if err != nil {
+			return fmt.Errorf("error parsing date: %v", err)
+		}
 	}
 
 	vi.Date = parsedTime

@@ -1,3 +1,4 @@
+// Start of Selection
 package models
 
 import (
@@ -19,38 +20,49 @@ type CustomDate struct {
 
 // UnmarshalJSON parses the date string in the format "2006-01-02"
 func (cd *CustomDate) UnmarshalJSON(b []byte) error {
-	// Remove quotes from the JSON string
-	str := string(b)
-	str = str[1 : len(str)-1]
-
-	// Parse the date string
-	t, err := time.Parse("2006-01-02", str)
-	if err != nil {
-		return fmt.Errorf("error parsing date: %v", err)
+	var dateStr string
+	if err := json.Unmarshal(b, &dateStr); err != nil {
+		return fmt.Errorf("CustomDate UnmarshalJSON: %v", err)
 	}
-
-	cd.Time = t
+	parsedTime, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		return fmt.Errorf("CustomDate UnmarshalJSON: %v", err)
+	}
+	cd.Time = parsedTime
 	return nil
 }
 
+// Start of Selection
 // UnmarshalJSON for Observation to handle string to float64 conversion
 func (o *Observation) UnmarshalJSON(b []byte) error {
-	var temp struct {
-		Date  CustomDate `json:"date"`
-		Value string     `json:"value"`
+	type Alias Observation
+	aux := &struct {
+		Value interface{} `json:"value"`
+		*Alias
+	}{
+		Alias: (*Alias)(o),
 	}
 
-	if err := json.Unmarshal(b, &temp); err != nil {
-		return err
+	if err := json.Unmarshal(b, &aux); err != nil {
+		return fmt.Errorf("Observation UnmarshalJSON: %v", err)
 	}
 
-	// Convert the value from string to float64
-	value, err := strconv.ParseFloat(temp.Value, 64)
-	if err != nil {
-		return fmt.Errorf("error parsing value: %v", err)
+	switch v := aux.Value.(type) {
+	case float64:
+		o.Value = v
+	case string:
+		if v == "." {
+			o.Value = 0.0
+		} else {
+			parsedValue, err := strconv.ParseFloat(v, 64)
+			if err != nil {
+				return fmt.Errorf("Observation UnmarshalJSON: cannot parse value: %v", err)
+			}
+			o.Value = parsedValue
+		}
+	default:
+		return fmt.Errorf("Observation UnmarshalJSON: unexpected type for value")
 	}
 
-	o.Date = temp.Date
-	o.Value = value
 	return nil
 }
