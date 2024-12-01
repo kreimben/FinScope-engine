@@ -1,0 +1,10 @@
+type Query {
+  stockNews(name: String, ticker: String): [News!]!
+}
+
+type News {
+  title: String!
+  content: String!
+  publishedDate: String!
+  url: String!
+} 
