@@ -10,6 +10,7 @@ type Config struct {
 	SupabaseURL       string
 	SupabaseAnonKey   string
 	SupabaseJWTSecret string
+	HuggingFaceAPIKey string
 }
 
 func LoadConfig() *Config {
@@ -19,5 +20,6 @@ func LoadConfig() *Config {
 		SupabaseURL:       os.Getenv("SUPABASE_URL"),
 		SupabaseAnonKey:   os.Getenv("SUPABASE_ANON_KEY"),
 		SupabaseJWTSecret: os.Getenv("SUPABASE_JWT_SECRET"),
+		HuggingFaceAPIKey: os.Getenv("HUGGINGFACE_API_KEY"),
 	}
 }

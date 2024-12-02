@@ -54,11 +54,19 @@ func StartFinanceYahooCrawler(cfg *config.Config) {
 			return
 		}
 
+		// Generate embedding for the content
+		embedding, err := utils.GenerateEmbedding(cfg.HuggingFaceAPIKey, content)
+		if err != nil {
+			log.WithError(err).Error("Error generating embedding")
+			return
+		}
+
 		data := models.FinanceNews{
 			Title:         title,
 			Content:       content,
 			PublishedDate: publishedDate,
 			OriginURL:     link,
+			ContentVector: embedding,
 		}
 		log.WithFields(logrus.Fields{
 			"title":          title,
