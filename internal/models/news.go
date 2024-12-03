@@ -11,7 +11,6 @@ type FinanceNews struct {
 	Content       string    `json:"content"`
 	PublishedDate time.Time `json:"published_date"`
 	OriginURL     string    `json:"origin_url"`
-	ContentVector []float32 `json:"content_vector"`
 }
 
 // Add UnmarshalJSON for FinanceNews
